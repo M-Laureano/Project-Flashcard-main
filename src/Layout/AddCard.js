@@ -67,7 +67,7 @@ function AddCard() {
     history.go(0);
   };
   return (
-    <>
+    <div>
       <nav aria-label='breadcrumb'>
         <ol className='breadcrumb'>
           <li className='breadcrumb-item'>
@@ -92,7 +92,7 @@ function AddCard() {
         newCardData={newCardData}
         deckId={deckId}
       />
-    </>
+    </div>
   );
 }
 

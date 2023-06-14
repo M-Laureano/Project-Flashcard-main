@@ -1,126 +1,98 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
-import { readDeck, updateDeck } from '../utils/api';
+import React, { useState, useEffect } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { updateDeck, readDeck } from "../utils/api/index";
 
-// Component for edit deck component
 function EditDeck() {
-  const mountedRef = useRef(false);
-  const initialState = { name: '', description: '' };
-  const [editDeckFormData, setEditDeckFormData] = useState(initialState);
-
-  const { deckId } = useParams();
+  const initialState = { name: "", description: "" };
+  const [formData, setFormData] = useState(initialState);
+  const [deck, setDeck] = useState({});
   const history = useHistory();
+  const { deckId } = useParams();
 
-  // effect for mounted ref changes
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
-
-  // effect to grab deck information from server
+  // loads deck and copies it into state object
   useEffect(() => {
     const abortController = new AbortController();
-    async function loadDeck() {
-      try {
-        const loadedDeck = await readDeck(deckId, abortController.signal);
-        if (mountedRef.current) {
-          setEditDeckFormData(() => loadedDeck);
-        }
-      } catch (error) {
-        if (error.name !== 'AbortError') {
-          throw error;
-        }
-      }
-    }
-
-    loadDeck();
-    return () => {
-      abortController.abort();
+    const loadDeck = async () => {
+      const loadedDeck = await readDeck(deckId, abortController.signal);
+      setDeck(() => loadedDeck);
+      setFormData({
+        id: deckId,
+        name: loadedDeck.name,
+        description: loadedDeck.description,
+      });
     };
+    loadDeck();
+    return () => abortController.abort();
   }, [deckId]);
 
-  // Handlers
-  const changeHandler = ({ target }) => {
-    setEditDeckFormData((currentState) => ({
-      ...currentState,
-      [target.name]: target.value,
-    }));
+  // adds new data to state object
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const submitHandler = async (event) => {
+  // updates the deck in api with state object and returns to deck screen
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await updateDeck(editDeckFormData);
-    history.push(`/decks/${response.id}`);
+    const deckNum = await updateDeck(formData);
+    history.push(`/decks/${deckNum.id}`);
   };
 
+  // displays edit deck form
   return (
-    <>
-      <nav aria-label='breadcrumb'>
-        <ol className='breadcrumb'>
-          <li className='breadcrumb-item'>
-            <Link to='/'>
-              <i className='fas fa-home'></i> Home
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item text-primary">
+            <Link to="/">
+              <i className='bi bi-house-door-fill'></i>Home
             </Link>
           </li>
-          <li className='breadcrumb-item'>
-            <Link to={`/decks/${deckId}`}>
-              {editDeckFormData.name ? editDeckFormData.name : 'Loading...'}
-            </Link>
+          <li className="breadcrumb-item text-primary">
+            <Link to={`/decks/${deckId}`}>{deck.name}</Link>
           </li>
-          <li className='breadcrumb-item active' aria-current='page'>
+          <li className="breadcrumb-item active" aria-current="page">
             Edit Deck
           </li>
         </ol>
       </nav>
-      <form>
-        <h1 className='my-4 text-center'>Edit Deck</h1>
-        <div className='form-group'>
-          <label htmlFor='name'>Name</label>
+      <h1>Edit Deck</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="formGroupExampleInput">Name</label>
           <input
-            name='name'
-            id='name'
-            className='form-control form-control-lg'
-            type='text'
-            placeholder='Deck Name'
-            onChange={changeHandler}
-            value={editDeckFormData.name}
+            name="name"
+            type="text"
+            className="form-control"
+            value={formData.name}
+            placeholder={deck.name}
+            onChange={handleChange}
             required
-          ></input>
+          />
         </div>
-        <div className='form-group'>
-          <label htmlFor='description'>Description</label>
+        <div className="form-group">
+          <label htmlFor="formGroupExampleInput2">Description</label>
           <textarea
-            className='form-control'
-            id='description'
-            name='description'
-            rows='5'
-            placeholder='Brief description of the deck'
-            onChange={changeHandler}
-            value={editDeckFormData.description}
+            name="description"
+            style={{ resize: "none" }}
+            rows="5"
+            className="form-control"
+            value={formData.description}
+            placeholder={deck.description}
+            onChange={handleChange}
             required
-          ></textarea>
+          />
         </div>
-        <Link to='/' className='mr-2'>
-          <button
-            type='button'
-            className='btn btn-secondary'
-            onClick={() => history.push(`/decks/${deckId}`)}
-          >
-            Cancel
+        <div className="mb-3">
+          <Link to={`/decks/${deckId}`}>
+            <button className="btn btn-secondary mr-2">Cancel</button>
+          </Link>
+          <button type="submit" className="btn btn-primary">
+            Submit
           </button>
-        </Link>
-        <button
-          type='submit'
-          className='btn btn-primary'
-          onSubmit={submitHandler}
-        >
-          Submit
-        </button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 
-export default EditDeck;
+export default EditDeck

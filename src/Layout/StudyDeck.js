@@ -93,7 +93,7 @@ function StudyDeck() {
 
   if (deck.cards.length <= 2) {
     return (
-      <>
+      <div>
         {breadcrumb}
         <div className='card'>
           <div className='card-body'>
@@ -110,11 +110,11 @@ function StudyDeck() {
             </Link>
           </div>
         </div>
-      </>
+      </div>
     );
   } else {
     return (
-      <>
+      <div>
         {breadcrumb}
         <h1 className='text-center'>Currently Studying: {deck.name} </h1>
         <div className='card'>
@@ -144,7 +144,7 @@ function StudyDeck() {
             </button>
           )}
         </div>
-      </>
+      </div>
     );
   }
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function NotFound() {
   return (
-    <>
+    <div>
       <nav aria-label='breadcrumb'>
         <ol className='breadcrumb'>
           <li className='breadcrumb-item'>
@@ -18,7 +18,7 @@ function NotFound() {
           <h1> Not Found</h1>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

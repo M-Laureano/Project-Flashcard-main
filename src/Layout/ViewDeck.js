@@ -47,7 +47,7 @@ function ViewDeck() {
   };
 
   return (
-    <>
+    <div>
       <nav aria-label='breadcrumb'>
         <ol className='breadcrumb'>
           <li className='breadcrumb-item'>
@@ -108,7 +108,7 @@ function ViewDeck() {
       <Route>
         <ViewCards cards={deck.cards} />
       </Route>
-    </>
+    </div>
   );
 }
 

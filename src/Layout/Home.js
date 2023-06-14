@@ -91,7 +91,7 @@ function Home() {
 
   // return decks
   return decks ? (
-    <>{styledDecks}</>
+    <div>{styledDecks}</div>
   ) : (
     <p>Loading...</p>
   );

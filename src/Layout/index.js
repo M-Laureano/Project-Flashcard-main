@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import { Route, Link, Switch } from 'react-router-dom';
 import Header from './Header';
 import NotFound from './NotFound';
@@ -11,8 +11,10 @@ import AddCard from './AddCard';
 import EditCard from './EditCard';
 
 function Layout() {
+  const [deck, setDeck] = useState();
+
   return (
-    <>
+    <div>
       <Header />
       <div className='container'>
         <Switch>
@@ -39,7 +41,7 @@ function Layout() {
 
           {/* EditDeck Component */}
           <Route exact path='/decks/:deckId/edit'>
-            <EditDeck />
+            <EditDeck deck={deck} setDeck={setDeck}/>
           </Route>
 
           {/* View Deck Component */}
@@ -54,7 +56,7 @@ function Layout() {
 
           {/* Edit Card Component */}
           <Route exact path='/decks/:deckId/cards/:cardId/edit'>
-            <EditCard />
+            <EditCard deck={deck} setDeck={setDeck}/>
           </Route>
 
           {/* Not Found 404 Component */}
@@ -63,7 +65,7 @@ function Layout() {
           </Route>
         </Switch>
       </div>
-    </>
+    </div>
   );
 }
 
